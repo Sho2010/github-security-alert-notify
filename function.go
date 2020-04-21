@@ -21,6 +21,7 @@ type gitHubAlertPayload struct {
 	AffectedPackageName string `json:"affected_package_name"`
 	ExternalReference   string `json:"external_reference"`
 	ExternalIdentifier  string `json:"external_identifier"`
+	FixedIn             string `json:"fixed_in"`
 }
 
 type gitHubRepositoryPayload struct {
@@ -28,6 +29,7 @@ type gitHubRepositoryPayload struct {
 }
 
 type githubPayload struct {
+	Action     string                  `json:"action,omitempty"` //create, dismiss, resolve
 	Alert      gitHubAlertPayload      `json:"alert"`
 	Repository gitHubRepositoryPayload `json:"repository"`
 }
@@ -118,6 +120,11 @@ func Github2Slack(w http.ResponseWriter, r *http.Request) {
 	var payload githubPayload
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		fmt.Fprint(w, "Payload decode error")
+		return
+	}
+
+	// TODO: なんか slack側に投げたほうがいいかも
+	if payload.Action != "create" {
 		return
 	}
 
