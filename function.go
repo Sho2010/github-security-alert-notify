@@ -70,11 +70,18 @@ func buildAttachment(gh githubPayload) slack.Attachment {
 		Short: true,
 	}
 
+	fixedIn := slack.AttachmentField{
+		Title: "Fixedin",
+		Value: gh.Alert.FixedIn,
+		Short: false,
+	}
+
 	attachment.Fields = []slack.AttachmentField{
 		repository,
 		id,
 		pkg,
 		version,
+		fixedIn,
 	}
 
 	return attachment
